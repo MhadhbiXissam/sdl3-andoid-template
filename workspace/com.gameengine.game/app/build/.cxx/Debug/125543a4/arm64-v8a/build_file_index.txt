@@ -1,0 +1,2 @@
+/root/workspace/com.gameengine.game/app/jni/Android.mk
+/root/workspace/com.gameengine.game/app/jni/Application.mk

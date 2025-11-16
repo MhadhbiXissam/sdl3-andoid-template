@@ -16,7 +16,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ${XAUTHORITY}:${XAUTHORITY}:ro
       - /dev/bus/usb:/dev/bus/usb
-      - ./com.gameengine.game:/root/project
+      - ./workspace:/root/workspace
     stdin_open: true
     tty: true
     devices:

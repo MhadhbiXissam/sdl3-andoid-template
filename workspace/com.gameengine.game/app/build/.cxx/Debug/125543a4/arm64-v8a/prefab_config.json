@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "prefabPath": "/root/.gradle/caches/modules-2/files-2.1/com.google.prefab/cli/2.1.0/aa32fec809c44fa531f01dcfb739b5b3304d3050/cli-2.1.0-all.jar",
+  "packages": [
+    "/root/.gradle/caches/8.12/transforms/03d2612a8079f5e70829bbffecb51cf1/transformed/SDL3-3.2.26/prefab"
+  ]
+}

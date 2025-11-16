@@ -8,7 +8,7 @@ ENV PS1='\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u
 ENV PATH="/root/.local/bin/:${PATH}"
 
 ##################################################
-#             Configure tzdata                   #
+#             Configure tzdata & Keyboard        #
 ##################################################
 RUN <<EOF
 echo -n '
@@ -26,8 +26,9 @@ RUN apt-get update && apt-get install -y locales tzdata \
     && update-locale LANG=en_US.UTF-8 \
     && echo 'Europe/Paris' > /etc/timezone \
     && dpkg-reconfigure -f noninteractive tzdata \
-    && apt-get install -y --no-install-recommends software-properties-common kbd \
-    && echo "export PS1=\"$PS1\"" >> /root/.bashrc
+    && apt-get install -y --no-install-recommends software-properties-common kbd
+
+RUN echo "export PS1=\"$PS1\"" >> /root/.bashrc
 
 ##################################################
 #              Setup Python 3.11                 #
@@ -41,22 +42,16 @@ RUN apt update && apt install -y \
     && python3.11 -m virtualenv /opt/base
 ENV PATH="/opt/base/bin:${PATH}"
 
-
 ##################################################
 #                install linux tools             #
 ##################################################
-RUN apt install -y tree lsof sudo nano unzip curl git build-essential cmake wget unzip ninja-build wget 
+RUN apt install -y tree lsof sudo nano unzip curl git build-essential cmake wget ninja-build mesa-utils libgl1-mesa-dri
 
 ##################################################
 #              install Nim                       #
 ##################################################
 RUN curl https://nim-lang.org/choosenim/init.sh -sSf | sh -s -- -y
-ENV PATH=/root/.nimble/bin:$PATH
-
-##################################################
-#              devic dri iris                     #
-##################################################
-RUN sudo apt install -y mesa-utils libgl1-mesa-dri
+ENV PATH="/root/.nimble/bin:${PATH}"
 
 #################################################
 #           install code-server                  #
@@ -68,11 +63,9 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh \
     && code-server --install-extension ms-python.python \
     && code-server --install-extension ms-python.debugpy \
     && code-server --install-extension nimsaem.nimvscode \
-    && mkdir -p /root/.config/code-server \
     && mkdir -p /root/.local/share/code-server/User \
-    && mkdir -p $HOME/workspace \
     && echo $VSCODE_SETTINGS > /root/.local/share/code-server/User/settings.json \
-    && mkdir /root/project
+    && mkdir -p /root/project
 
 EXPOSE 8000
 
@@ -84,62 +77,64 @@ ENV GIT_EMAIL=example@gmail.com
 ENV GIT_TOKEN=1265465121sd5sf
 
 ##################################################
-#         Download OpenJDK 17 (Linux x64)        #
+#         Install OpenJDK 17                     #
 ##################################################
-run wget https://download.java.net/openjdk/jdk17.0.0.1/ri/openjdk-17.0.0.1+2_linux-x64_bin.tar.gz -O /root/openjdk-17.0.0.1+2_linux-x64_bin.tar.gz
-RUN mkdir -p /root/jvm 
-RUN tar -xzf /root/openjdk-17.0.0.1+2_linux-x64_bin.tar.gz -C /root/jvm 
-RUN rm /root/openjdk-17.0.0.1+2_linux-x64_bin.tar.gz
-#   Set JAVA_HOME and PATH
+RUN wget https://download.java.net/openjdk/jdk17.0.0.1/ri/openjdk-17.0.0.1+2_linux-x64_bin.tar.gz \
+    -O /root/openjdk.tar.gz \
+    && mkdir -p /root/jvm \
+    && tar -xzf /root/openjdk.tar.gz -C /root/jvm \
+    && rm /root/openjdk.tar.gz
+
 ENV JAVA_HOME="/root/jvm/jdk-17.0.0.1"
-ENV PATH="/root/jvm/jdk-17.0.0.1/bin:${PATH}"
-
-
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 ##################################################
-#           install Android NDK & SDK            #
+#           install Android SDK + NDK            #
 ##################################################
-
-
-
-ENV ANDROID_NDK_VERSION=r26d
-ENV ANDROID_NDK_HOME=/opt/android-ndk
 ENV ANDROID_HOME=/opt/android-sdk
 ENV ANDROID_SDK_ROOT=/opt/android-sdk
-ENV PATH="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH"
-run wget -q https://dl.google.com/android/repository/android-ndk-r26d-linux.zip  -O /root/android-ndk-r26d-linux.zip
-run cd /root && unzip /root/android-ndk-${ANDROID_NDK_VERSION}-linux.zip
-run mv /root/android-ndk-${ANDROID_NDK_VERSION} ${ANDROID_NDK_HOME} 
-run rm /root/android-ndk-${ANDROID_NDK_VERSION}-linux.zip
-env PATH="$ANDROID_NDK_HOME:$PATH"
+ENV PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${PATH}"
 
-# Install SDK command-line tools
-RUN mkdir -p /opt/android-sdk && cd /opt/android-sdk 
-run wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /opt/android-sdk/cmd.zip 
-run cd /opt/android-sdk && unzip -q cmd.zip -d cmdline-tools \
-    && rm cmd.zip \
-    && mkdir -p cmdline-tools/latest \
-    && mv cmdline-tools/cmdline-tools/* cmdline-tools/latest/ \
-    && rm -rf cmdline-tools/cmdline-tools \
-    && chmod +x cmdline-tools/latest/bin/* \
-    && yes | cmdline-tools/latest/bin/sdkmanager --licenses \
-    && cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
-run $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list
+RUN mkdir -p /opt/android-sdk/cmdline-tools
 
-# Install graddle
-run wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip -O  /root/gradle-8.7-bin.zip
-run  cd /root && unzip gradle-8.7-bin.zip
-ENV  GRADLE_HOME=/root/gradle-8.7
-ENV  PATH=$GRADLE_HOME/bin:$PATH
+# Download command-line tools
+RUN wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip \
+    -O /tmp/cmd.zip \
+    && unzip -q /tmp/cmd.zip -d /opt/android-sdk/cmdline-tools \
+    && rm /tmp/cmd.zip
 
+# Move into correct folder
+RUN mkdir -p /opt/android-sdk/cmdline-tools/latest \
+    && mv /opt/android-sdk/cmdline-tools/cmdline-tools/* /opt/android-sdk/cmdline-tools/latest/ \
+    && rm -rf /opt/android-sdk/cmdline-tools/cmdline-tools
+
+# Accept licenses
+RUN yes | sdkmanager --licenses
+
+# Install SDK packages
+RUN sdkmanager --install \
+    "platform-tools" \
+    "build-tools;34.0.0" \
+    "platforms;android-34"
+
+# Install NDK 27
+RUN sdkmanager --install "ndk;27.0.12077973"
+
+ENV ANDROID_NDK_HOME=/opt/android-sdk/ndk/27.0.12077973
+ENV PATH="${ANDROID_NDK_HOME}:${PATH}"
 
 ##################################################
-#              copy project                      #
+#           Install Gradle 8.7                   #
 ##################################################
-RUN mkdir -p /root/project
+RUN wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip \
+    -O /root/gradle.zip \
+    && unzip /root/gradle.zip -d /root \
+    && rm /root/gradle.zip
+
+ENV GRADLE_HOME=/root/gradle-8.7
+ENV PATH="${GRADLE_HOME}/bin:${PATH}"
+
 ##################################################
 #              entrypoint script                 #
 ##################################################
-ADD docker-files/entrypoint.sh /root/entrypoint.sh
-RUN chmod +x /root/entrypoint.sh
-ENTRYPOINT ["/root/entrypoint.sh"]
+ENTRYPOINT ["bash","/root/workspace/entrypoint.sh"]
