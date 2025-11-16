@@ -1,0 +1,19 @@
+/root/jvm/jdk-17.0.0.1/bin/java \
+  --class-path \
+  /root/.gradle/caches/modules-2/files-2.1/com.google.prefab/cli/2.1.0/aa32fec809c44fa531f01dcfb739b5b3304d3050/cli-2.1.0-all.jar \
+  com.google.prefab.cli.AppKt \
+  --build-system \
+  ndk-build \
+  --platform \
+  android \
+  --abi \
+  arm64-v8a \
+  --os-version \
+  21 \
+  --stl \
+  system \
+  --ndk-version \
+  27 \
+  --output \
+  /tmp/agp-prefab-staging15579878748051833460/staged-cli-output \
+  /root/.gradle/caches/8.12/transforms/03d2612a8079f5e70829bbffecb51cf1/transformed/SDL3-3.2.26/prefab

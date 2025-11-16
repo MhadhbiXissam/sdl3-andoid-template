@@ -11,12 +11,12 @@ services:
       - GIT_EMAIL=${GIT_EMAIL}
       - GIT_TOKEN=${GIT_TOKEN}
     ports:
-      - "7000:7000"  # maps container port 7000 to host port 7000
+      - "7001:7000"  # maps container port 7000 to host port 7000
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ${XAUTHORITY}:${XAUTHORITY}:ro
       - /dev/bus/usb:/dev/bus/usb
-      - ./com.gameengine.game:/root/project§
+      - ./com.gameengine.game:/root/project
     stdin_open: true
     tty: true
     devices:

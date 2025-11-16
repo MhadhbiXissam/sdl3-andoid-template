@@ -1,0 +1,2 @@
+/root/project/app/jni/Android.mk
+/root/project/app/jni/Application.mk

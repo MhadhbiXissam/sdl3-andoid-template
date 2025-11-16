@@ -1,0 +1,7 @@
+com.gameengine.game
+color colorAccent
+color colorPrimary
+color colorPrimaryDark
+mipmap ic_launcher
+string app_name
+style AppTheme
