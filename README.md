@@ -36,7 +36,7 @@ services:
 
 4. run the docker image 
 ```bash
-make docker compose up --build 
+make docker-compose-up 
 ```
 5. open code-server web url 
 then open port on [http://127.0.0.1:8080/proxy/7001/?folder=/root/project](http://127.0.0.1:8080/proxy/7001/?folder=/root/project)
