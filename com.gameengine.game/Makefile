@@ -1,4 +1,0 @@
-
-
-build : 
-	./gradlew clean assembleDebug

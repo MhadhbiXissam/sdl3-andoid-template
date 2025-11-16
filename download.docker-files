@@ -1,4 +1,0 @@
-wget https://dl.google.com/android/repository/android-ndk-r26d-linux.zip  -O .ignore/android-ndk-r26d-linux.zip 
-wget https://download.java.net/openjdk/jdk17.0.0.1/ri/openjdk-17.0.0.1+2_linux-x64_bin.tar.gz -O .ignore/openjdk-17.0.0.1+2_linux-x64_bin.tar.gz
-wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O .ignore/cmd.zip
-wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip -O .ignore/gradle-8.7-bin.zip
