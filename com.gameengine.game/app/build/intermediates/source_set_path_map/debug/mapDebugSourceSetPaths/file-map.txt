@@ -1,0 +1,7 @@
+com.gameengine.game.app-pngs-0 /root/project/app/build/generated/res/pngs/debug
+com.gameengine.game.app-resValues-1 /root/project/app/build/generated/res/resValues/debug
+com.gameengine.game.app-packageDebugResources-2 /root/project/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.gameengine.game.app-packageDebugResources-3 /root/project/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.gameengine.game.app-debug-4 /root/project/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.gameengine.game.app-debug-5 /root/project/app/src/debug/res
+com.gameengine.game.app-main-6 /root/project/app/src/main/res

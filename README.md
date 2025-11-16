@@ -33,7 +33,7 @@ services:
     tty: true
     devices:
       - "/dev/dri:/dev/dri"
-
+```
 4. run the docker image 
 ```bash
 make docker-compose-up 
